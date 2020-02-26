@@ -1,11 +1,17 @@
-import express, { Request, Response, NextFunction} from 'express';
+import express, { ErrorRequestHandler } from 'express';
+import { json } from 'body-parser';
+import profRoutes from './routes/prof';
 
 const app = express();
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-  res.send('<h1>Hello from Ze!!!</h1>')
-})
+app.use(json());
 
-app.listen(2000, () => {
-  console.log('listening at port ' + 2000)
-})
+app.use('/profs', profRoutes);
+
+const myErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
+  res.status(500).json({ message: err.message });
+}
+
+app.use(myErrorHandler);
+
+app.listen(2000);
